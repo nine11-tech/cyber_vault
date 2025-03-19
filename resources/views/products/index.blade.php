@@ -12,6 +12,13 @@
             </tr>
             @foreach ($products as $product)
                 <tr>
+                <td>
+    <form action="{{ route('cart.add', $product->id) }}" method="POST">
+        @csrf
+        <button type="submit" class="btn btn-success">Add to Cart</button>
+    </form>
+</td>
+
                     <td>{{ $product->name }}</td>
                     <td>${{ $product->price }}</td>
                     <td>

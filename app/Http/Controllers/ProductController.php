@@ -19,15 +19,18 @@ class ProductController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required',
-            'description' => 'nullable',
-            'price' => 'required|numeric',
-            'image' => 'nullable|string'
-        ]);
+{
+    $request->validate([
+        'name' => 'required',
+        'description' => 'nullable',
+        'price' => 'required|numeric',
+        'category' => 'nullable|string',
+        'stock' => 'nullable|integer'
+    ]);
 
-        Product::create($request->all());
-        return redirect()->route('products.index');
-    }
+    
+    Product::create($request->except('_token'));
+
+    return redirect()->route('products.index');
+}
 }
