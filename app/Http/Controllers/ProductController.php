@@ -62,4 +62,26 @@ class ProductController extends Controller
         $product->delete();
         return redirect()->route('products.index')->with('success', 'Product deleted successfully!');
     }
+    public function search(Request $request)
+{
+    $query = $request->input('query');
+    $products = Product::where('name', 'LIKE', "%{$query}%")
+                        ->orWhere('description', 'LIKE', "%{$query}%")
+                        ->get();
+
+    return view('products.index', compact('products'));
 }
+public function show($id)
+{
+    $product = Product::find($id);
+
+    if (!$product) {
+        // Show a clean error page or message
+        abort(404, 'Product not found.');
+    }
+
+    return view('products.show', compact('product'));
+}
+
+}
+    
