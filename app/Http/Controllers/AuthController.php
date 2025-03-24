@@ -21,7 +21,7 @@ class AuthController extends Controller
             $user = Auth::user();
 
             // Redirect to a new view with user details
-            return view('auth.dashboard', ['user' => $user]);
+            return redirect('/products');
         }
 
         // Redirect back with an error message if login fails
@@ -59,9 +59,8 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        return redirect('/products')->with([
-            'success' => 'Registration successful!',
-            'user' => $user
+        return redirect('/login')->with([
+            'success' => 'Registration successful!'
         ]);
     }
 }
