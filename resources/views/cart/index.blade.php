@@ -1,37 +1,61 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
-        <h2>Your Cart</h2>
-        @if(session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
+<div class="container">
+    <h2>Your Cart</h2>
 
-        @if(count($cart) > 0)
-            <table class="table">
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
+    @if(empty($cart))
+        <p>Your cart is empty.</p>
+    @else
+        <table class="table table-bordered">
+            <thead>
                 <tr>
-                    <th>Name</th>
+                    <th>Product</th>
+                    <th>Qty</th>
                     <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Action</th>
+                    <th>Total</th>
                 </tr>
-                @foreach($cart as $id => $item)
+            </thead>
+            <tbody>
+                @php $grandTotal = 0; @endphp
+                @foreach ($cart as $id => $item)
+                    @php
+                        $total = $item['price'] * $item['quantity'];
+                        $grandTotal += $total;
+                    @endphp
                     <tr>
                         <td>{{ $item['name'] }}</td>
-                        <td>${{ $item['price'] }}</td>
-                        <td>{{ $item['quantity'] }}</td>
                         <td>
-                            <form action="{{ route('cart.remove', $id) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger">Remove</button>
+                            <form action="{{ route('cart.update', $id) }}" method="POST" class="d-flex">
+                            @csrf
+                            @method('PUT')
+                            <input type="number" name="quantity" value="{{ $item['quantity'] }}" min="1" class="form-control me-2" style="width: 80px;">
+                            <button type="submit" class="btn btn-sm btn-warning">Update</button>
                             </form>
                         </td>
+                        <td>
+                            <form action="{{ route('cart.remove', $id) }}" method="POST">
+                            @csrf
+                             @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                            </form>
+                            </td>
+
+
+                        <td>${{ number_format($item['price'], 2) }}</td>
+                        <td>${{ number_format($total, 2) }}</td>
                     </tr>
                 @endforeach
-            </table>
-        @else
-            <p>Your cart is empty.</p>
-        @endif
-    </div>
+            </tbody>
+        </table>
+
+        <h4>Total: ${{ number_format($grandTotal, 2) }}</h4>
+
+        <a href="{{ route('paypal.email') }}" class="btn btn-success">Proceed to Checkout</a>
+    @endif
+</div>
 @endsection
