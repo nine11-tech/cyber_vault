@@ -1,10 +1,20 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container py-5 text-center">
-    <h2 class="mb-4">Pay with PayPal</h2>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="shadow-lg rounded-4 p-5 bg-white" style="max-width: 500px; width: 100%;">
+        <div class="text-center mb-4">
+            <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg" alt="PayPal" width="90">
+            <h2 class="mt-3 fw-bold text-dark">Secure Checkout</h2>
+            <p class="text-muted">Pay with PayPal or credit card</p>
+        </div>
 
-    <div id="paypal-button-container"></div>
+        <div id="paypal-button-container" class="mb-3"></div>
+
+        <div class="text-center mt-4">
+            <p class="small text-muted">🔒 Your payment is protected with industry-standard encryption.</p>
+        </div>
+    </div>
 </div>
 @endsection
 
@@ -14,19 +24,25 @@
 
     {{-- PayPal Button --}}
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             paypal.Buttons({
-                createOrder: function(data, actions) {
+                style: {
+                    layout: 'vertical',
+                    color: 'gold',
+                    shape: 'pill',
+                    label: 'paypal',
+                },
+                createOrder: function (data, actions) {
                     return actions.order.create({
                         purchase_units: [{
                             amount: {
-                                value: '{{ $total ?? "10.00" }}' // fallback for safety
+                                value: '{{ $total ?? "10.00" }}'
                             }
                         }]
                     });
                 },
-                onApprove: function(data, actions) {
-                    return actions.order.capture().then(function(details) {
+                onApprove: function (data, actions) {
+                    return actions.order.capture().then(function (details) {
                         window.location.href = "{{ route('paypal.success') }}";
                     });
                 },
