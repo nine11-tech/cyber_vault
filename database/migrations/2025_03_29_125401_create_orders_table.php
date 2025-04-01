@@ -13,10 +13,11 @@ return new class extends Migration
 {
     Schema::create('orders', function (Blueprint $table) {
         $table->id();
-        $table->string('customer_email')->nullable(); // for guest or registered user
+        $table->string('customer_email');
         $table->decimal('total', 10, 2);
         $table->timestamps();
     });
+    
 }
 
 
