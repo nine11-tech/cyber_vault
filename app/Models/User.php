@@ -45,10 +45,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function cart()
+{
+    return $this->hasMany(Cart::class);
+}
 
-    // In User.php (User model)
-    public function isAdmin()
-    {
-        return $this->role === 'admin'; // Assuming you have a `role` column in the users table
-    }
 }
