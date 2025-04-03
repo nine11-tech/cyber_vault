@@ -2,52 +2,83 @@
 
 @section('content')
     <div class="container">
-        <h2>All Products</h2>
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-primary text-white py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">Product Management</h2>
+                    <a href="{{ route('products.create') }}" class="btn btn-light">
+                        <i class="fas fa-plus me-2"></i>Add Product
+                    </a>
+                </div>
+            </div>
 
-        {{-- Search Form --}}
-        <form action="{{ route('products.search') }}" method="GET" class="mb-3">
-            <input type="text" name="query" class="form-control" placeholder="Search for a product...">
-            <button type="submit" class="btn btn-primary mt-2">Search</button>
-        </form>
+            <div class="card-body p-4">
+                @if(session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
 
-        {{-- No Products Message --}}
-        @if($products->isEmpty())
-            <p>No products found matching your search.</p>
-        @else
-            {{-- Products Table --}}
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Price</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($products as $product)
-                        <tr>
-                            <td>{{ $product->name }}</td>
-                            <td>${{ number_format($product->price, 2) }}</td>
-                            <td class="d-flex gap-2">
-                                {{-- Add to Cart --}}
-                                <form action="{{ route('cart.add', $product->id) }}" method="POST" class="d-flex gap-2">
-                                    @csrf
-                                    <input type="number" name="quantity" min="1" value="1" class="form-control" style="width: 80px;">
-                                    <button type="submit" class="btn btn-success">Add to Cart</button>
-                                    </form>
+                <form action="{{ route('products.search') }}" method="GET" class="mb-4">
+                    <div class="input-group">
+                        <input type="text" name="query" class="form-control" placeholder="Search products..."
+                            value="{{ request('query') }}">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </form>
 
-
-                                {{-- Delete Product --}}
-                                <form action="{{ route('products.destroy', $product->id) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                </form>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        @endif
+                @if($products->isEmpty())
+                    <div class="alert alert-info">
+                        No products found matching your search.
+                    </div>
+                @else
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped mb-0">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Price</th>
+                                    <th>Category</th>
+                                    <th>Stock</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($products as $product)
+                                    <tr>
+                                        <td>
+                                            <a href="{{ route('products.show', $product->id) }}"
+                                                class="text-decoration-none text-dark fw-bold">
+                                                {{ $product->name }}
+                                            </a>
+                                        </td>
+                                        <td>${{ number_format($product->price, 2) }}</td>
+                                        <td>{{ $product->category ?? 'N/A' }}</td>
+                                        <td>{{ $product->stock ?? 'N/A' }}</td>
+                                        <td class="text-end">
+                                            <div class="d-flex gap-2 justify-content-end">
+                                                <a href="{{ route('products.edit', $product->id) }}" class="btn btn-sm btn-warning">
+                                                    <i class="fas fa-edit me-1"></i>Edit
+                                                </a>
+                                                <form action="{{ route('products.destroy', $product->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-danger">
+                                                        <i class="fas fa-trash me-1"></i>Delete
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @endif
+            </div>
+        </div>
     </div>
 @endsection
