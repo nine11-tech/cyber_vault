@@ -94,6 +94,15 @@ class ProductController extends Controller
 
         return view('products.index', compact('products'));
     }
+    public function searchUser(Request $request)
+    {
+    $query = $request->input('query');
+    $products = \App\Models\Product::where('name', 'like', "%$query%")
+        ->orWhere('category', 'like', "%$query%")
+        ->get();
+
+    return view('home', compact('products'));
+    }
 
     public function show($id)
     {
@@ -105,4 +114,10 @@ class ProductController extends Controller
 
         return view('products.show', compact('product'));
     }
+    public function showUser($id)
+    {
+    $product = Product::findOrFail($id);
+    return view('products.user-show', compact('product'));
+    }
+
 }

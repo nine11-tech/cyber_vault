@@ -9,10 +9,19 @@ Route::get('/', function () {
 
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
+use App\Models\Product;
+
+Route::get('/home', function () {
+    $products = Product::all();
+    return view('home', compact('products'));
+    })->name('home');
+
+Route::get('/home/search', [ProductController::class, 'searchUser'])->name('user.products.search');
 
 Route::get('/products/search', [ProductController::class, 'search'])->name('products.search');
 // Product Routes
 Route::resource('/products', ProductController::class);
+Route::get('/product/{id}', [ProductController::class, 'showUser'])->name('products.user');
 
 // Authentication Routes
 Route::get('/login', [AuthController::class, 'getLogin'])->name('login');

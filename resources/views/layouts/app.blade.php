@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
         <div class="container">
             <a class="navbar-brand fw-bold" href="{{ url('/') }}">
                 <i class="fas fa-shield-alt me-2"></i>CyberVault
@@ -38,12 +38,9 @@
             </div>
         </div>
     </nav>
-
-    <div class="container py-4">
         @yield('content')
-    </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     @stack('scripts')
+    @yield('scripts')
 </body>
 </html>

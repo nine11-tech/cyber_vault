@@ -45,14 +45,23 @@ class PaypalController extends Controller
         'total' => $total,
     ]);
 
-    foreach ($cart as $item) {
+    foreach ($cart as $productId => $item) {
+        // 1. Create order item
         OrderItem::create([
             'order_id' => $order->id,
             'product_name' => $item['name'],
             'product_price' => $item['price'],
             'quantity' => $item['quantity'],
         ]);
+    
+        // 2. Update product stock
+        $product = \App\Models\Product::find($productId);
+        if ($product) {
+            $product->stock = max(0, $product->stock - $item['quantity']);
+            $product->save();
+        }
     }
+    
 
     // Send confirmation
     if ($customerEmail) {
