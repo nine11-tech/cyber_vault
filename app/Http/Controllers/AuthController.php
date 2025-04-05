@@ -21,7 +21,7 @@ class AuthController extends Controller
             $user = Auth::user();
 
             // Redirect to a new view with user details
-            return redirect('/products');
+            return redirect('/home');
         }
 
         // Redirect back with an error message if login fails
@@ -35,7 +35,7 @@ class AuthController extends Controller
 
     public function logout(Request $req){
         Auth::logout();
-        return redirect('/login');
+        return redirect('/home');
     }
 
     public function showForm()
@@ -59,7 +59,7 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        return redirect('/login')->with([
+        return redirect('/home')->with([
             'success' => 'Registration successful!'
         ]);
     }

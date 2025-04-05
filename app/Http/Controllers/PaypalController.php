@@ -49,6 +49,7 @@ class PaypalController extends Controller
         // 1. Create order item
         OrderItem::create([
             'order_id' => $order->id,
+            'product_id' => $productId,
             'product_name' => $item['name'],
             'product_price' => $item['price'],
             'quantity' => $item['quantity'],

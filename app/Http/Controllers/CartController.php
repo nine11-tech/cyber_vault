@@ -23,20 +23,27 @@ public function add(Request $request, $id)
     $quantity = (int) $request->input('quantity', 1);
 
     $cart = session()->get('cart', []);
-
-    
     $product = \App\Models\Product::findOrFail($productId);
+
+    // Vérifie stock disponible
+    $existingQty = isset($cart[$productId]) ? $cart[$productId]['quantity'] : 0;
+    $newQty = $existingQty + $quantity;
+
+    if ($newQty > $product->stock) {
+        return response()->json(['error' => 'Not enough stock.'], 422);
+    }
 
     $cart[$productId] = [
         "name" => $product->name,
         "price" => $product->price,
-        "quantity" => $quantity
+        "quantity" => $newQty
     ];
 
     session()->put('cart', $cart);
 
-    return redirect()->route('cart.index')->with('success', 'Product added to cart!');
+    return response()->json(['success' => 'Product added to cart!']);
 }
+
 
 
     public function remove($id)
@@ -57,12 +64,19 @@ public function add(Request $request, $id)
     $quantity = (int) $request->input('quantity', 1);
 
     if (isset($cart[$id])) {
+        $product = \App\Models\Product::findOrFail($id);
+
+        if ($quantity > $product->stock) {
+            return redirect()->route('cart.index')->with('error', 'Quantity exceeds available stock.');
+        }
+
         $cart[$id]['quantity'] = $quantity;
         session()->put('cart', $cart);
     }
 
     return redirect()->route('cart.index')->with('success', 'Quantity updated.');
 }
+
 
 
 }

@@ -115,9 +115,12 @@ class ProductController extends Controller
         return view('products.show', compact('product'));
     }
     public function showUser($id)
-    {
+{
     $product = Product::findOrFail($id);
-    return view('products.user-show', compact('product'));
-    }
+    $cart = session()->get('cart', []);
+    $currentInCart = isset($cart[$id]) ? $cart[$id]['quantity'] : 0;
+
+    return view('products.user-show', compact('product', 'currentInCart'));
+}
 
 }
