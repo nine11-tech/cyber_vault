@@ -52,14 +52,15 @@
                         You already have the maximum quantity of this product in your cart.
                     </div>
                 @else
-                    <form action="{{ route('cart.add', $product->id) }}" method="POST" class="d-flex align-items-center gap-2">
-                        @csrf
-                        <input type="number" name="quantity" value="1" min="1" max="{{ $remainingStock }}"
-                               class="form-control" style="max-width: 100px;">
-                        <button type="submit" class="btn btn-success">
-                            <i class="fas fa-cart-plus me-1"></i> Add to Cart
-                        </button>
-                    </form>
+                <form id="addToCartForm" data-url="{{ route('cart.add', $product->id) }}" class="d-flex align-items-center gap-2">
+                    @csrf
+                    <input type="number" name="quantity" id="quantityInput" value="1" min="1" max="{{ $remainingStock }}"
+                        class="form-control" style="max-width: 100px;">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-cart-plus me-1"></i> Add to Cart
+                    </button>
+                </form>
+
                 @endif
             @else
                 <div class="alert alert-warning d-inline-block">
@@ -68,5 +69,48 @@
             @endif
         </div>
     </div>
+    <!-- Toast notification -->
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1055">
+        <div id="cartToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    ✅ Product added to cart!
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
 </div>
+@push('scripts')
+<script>
+document.getElementById('addToCartForm')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const form = e.target;
+    const url = form.dataset.url;
+    const quantity = document.getElementById('quantityInput').value;
+    const token = document.querySelector('input[name="_token"]').value;
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': token,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ quantity: quantity })
+    });
+
+    const result = await response.json();
+    if (result.success) {
+        const toastEl = new bootstrap.Toast(document.getElementById('cartToast'));
+        toastEl.show();
+
+        setTimeout(() => {
+        location.reload();
+    }, 2500);
+    }
+});
+</script>
+@endpush
 @endsection

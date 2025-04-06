@@ -20,7 +20,6 @@ Route::get('/home/search', [ProductController::class, 'searchUser'])->name('user
 
 Route::get('/products/search', [ProductController::class, 'search'])->name('products.search');
 // Product Routes
-Route::resource('/products', ProductController::class);
 Route::get('/product/{id}', [ProductController::class, 'showUser'])->name('products.user');
 
 // Authentication Routes
@@ -46,3 +45,18 @@ Route::post('/checkout', [PaypalController::class, 'captureEmail'])->name('paypa
 Route::get('/checkout/pay', [PaypalController::class, 'checkout'])->name('paypal.checkout');
 Route::get('/checkout/success', [PaypalController::class, 'success'])->name('paypal.success');
 Route::get('/checkout/cancel', [PaypalController::class, 'cancel'])->name('paypal.cancel');
+
+use App\Http\Middleware\AdminMiddleware;
+
+// Appliquer le middleware directement dans la définition des routes
+Route::middleware([AdminMiddleware::class])->group(function () {
+    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
+    Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+    Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+    Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+
+});
+

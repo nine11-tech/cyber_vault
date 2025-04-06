@@ -19,10 +19,14 @@ class AuthController extends Controller
         // Attempt login
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-
-            // Redirect to a new view with user details
-            return redirect('/home');
+        
+            if ($user->is_admin) {
+                return redirect()->route('products.index'); // vers admin dashboard
+            } else {
+                return redirect('/home'); // utilisateur normal
+            }
         }
+        
 
         // Redirect back with an error message if login fails
         return back()->withErrors(['login' => 'Invalid email or password']);

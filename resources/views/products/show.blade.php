@@ -1,3 +1,8 @@
+@php
+    if (!Auth::check() || !Auth::user()->is_admin) {
+        abort(403, 'Unauthorized access');
+    }
+@endphp
 @extends('layouts.app')
 
 @section('content')
