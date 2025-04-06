@@ -12,7 +12,7 @@
                      style="max-height: 450px; object-fit: contain;">
             @else
                 <div class="bg-light text-center py-5 rounded-3">
-                    <i class="fas fa-image fa-3x text-muted"></i>
+                    <i class="fas fa-image fa-3x text-cyber-lighter"></i>
                     <p class="mt-2">No image available</p>
                 </div>
             @endif
@@ -36,7 +36,7 @@
 
             <div class="mb-4">
                 <h5 class="fw-semibold">Description</h5>
-                <p class="text-muted">{{ $product->description ?? 'No description available.' }}</p>
+                <p class="text-cyber-lighter">{{ $product->description ?? 'No description available.' }}</p>
             </div>
 
             {{-- Cart Form or Message --}}
