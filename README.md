@@ -1,8 +1,6 @@
 # 🚀 CyberVault - Digital Marketplace
 
 <p align="center">
-  <img src="https://i.imgur.com/JK39fEI.png" width="400" alt="CyberVault Logo">
-  <br>
   <strong>Premium digital products marketplace with cyberpunk aesthetic</strong>
 </p>
 
@@ -14,7 +12,7 @@
   <a href="#"><img src="https://img.shields.io/badge/license-MIT-39FF14?style=for-the-badge" alt="License"></a>
 </p>
 
-![CyberVault Dashboard](https://i.imgur.com/5Xm8L9h.png)
+![CyberVault Dashboard]
 
 ## 🔮 About The Project
 
