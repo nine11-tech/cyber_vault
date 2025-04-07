@@ -1,16 +1,58 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+    .checkout-card {
+        max-width: 480px;
+        margin: 60px auto;
+        padding: 40px;
+        background: rgba(23, 25, 30, 0.95);
+        border-radius: 16px;
+        text-align: center;
+        color: #e4e4e4;
+        box-shadow: 0 0 20px rgba(57, 255, 20, 0.1);
+    }
+
+    .checkout-card h2 {
+        font-weight: 600;
+        font-size: 26px;
+        color: #39ff14;
+        margin-bottom: 10px;
+    }
+
+    .checkout-card p {
+        font-size: 1rem;
+        color: #ccc;
+    }
+
+    .checkout-card img {
+        width: 80px;
+        margin-bottom: 20px;
+    }
+
+    .secure-msg {
+        font-size: 0.9rem;
+        margin-top: 25px;
+        color: #a8a8a8;
+    }
+
+    .secure-msg i {
+        color: #39ff14;
+        margin-right: 6px;
+    }
+</style>
+
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
-    <div class="shadow-lg rounded-4 p-5 bg-white text-center" style="max-width: 480px; width: 100%;">
-        <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg" alt="PayPal" width="80" class="mb-3">
-        <h2 class="fw-bold text-dark mb-2">Secure Checkout</h2>
-        <p class="text-muted mb-4">Pay with PayPal or Credit Card</p>
+    <div class="checkout-card">
+        <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg" alt="PayPal">
 
-        <div id="paypal-button-container" class="mb-4"></div>
+        <h2>Secure Checkout</h2>
+        <p>Pay with PayPal or Credit Card</p>
 
-        <p class="small text-muted">
-            <i class="fas fa-lock me-1"></i>
+        <div id="paypal-button-container" class="my-4"></div>
+
+        <p class="secure-msg">
+            <i class="fas fa-lock"></i>
             Your payment is protected with industry-standard encryption.
         </p>
     </div>

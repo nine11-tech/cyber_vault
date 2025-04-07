@@ -180,12 +180,14 @@
                                         </button>
                                     </div>
                                 @else
-                                    <div class="alert alert-dark py-1 px-2 mb-0 small w-100 text-center rounded border border-warning">
-                                        <i class="fas fa-times-circle me-1 text-warning"></i> 
-                                        <span class="text-cyber-lighter">Out of Stock</span>
-                                    </div>
+                                <div class="out-of-stock-box w-100 text-center">
+                                    <i class="fas fa-times-circle me-1"></i> 
+                                    <span>Out of Stock</span>
+                                </div>
                                 @endif
-                                <div class="cart-feedback mt-2" style="display: none;"></div>
+                                <div class="cart-feedback-wrapper mt-2" style="min-height: 35px;">
+                                    <div class="cart-feedback d-none"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -309,16 +311,18 @@
                 },
                 success: function () {
                     const feedback = card.find('.cart-feedback');
-                    feedback.html(`
+                    feedback
+                    .removeClass('d-none')
+                    .html(`
                         <div class="alert alert-success alert-dismissible fade show py-1 px-2 mb-0" role="alert">
-                            <i class="fas fa-check-circle me-1"></i> Product added to cart!
+                        <i class="fas fa-check-circle me-1"></i> Product added to cart!
                         </div>
                     `);
-                    feedback.fadeIn();
 
                     setTimeout(() => {
-                        feedback.fadeOut();
+                    feedback.addClass('d-none').html('');
                     }, 3000);
+
 
                     // Update cart badge with animation
                     const badge = document.getElementById('cartCountBadge');
@@ -336,11 +340,12 @@
                 },
                 error: function () {
                     const feedback = card.find('.cart-feedback');
-                    feedback.html(`<div class="alert alert-danger py-1 px-2 mb-0">❌ Failed, might be max quantity.</div>`);
-                    feedback.fadeIn();
+                    feedback
+                    .removeClass('d-none')
+                    .html(`<div class="alert alert-danger py-1 px-2 mb-0">❌ Failed, might be max quantity.</div>`);
 
                     setTimeout(() => {
-                        feedback.fadeOut();
+                    feedback.addClass('d-none').html('');
                     }, 3000);
                 }
             });
@@ -460,5 +465,24 @@
             height: 50px;
             object-fit: cover;
         }
+        .cart-feedback-wrapper {
+            transition: all 0.3s ease-in-out;
+        }
+        .out-of-stock-box {
+            background-color: #1e1e2f;
+            color: #ff5e5e;
+            border: 1px solid #ff5e5e;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            box-shadow: 0 0 6px rgba(255, 94, 94, 0.15);
+            display: inline-block;
+        }
+
+        .out-of-stock-box i {
+            color: #ff5e5e;
+        }
+
     </style>
 @endsection

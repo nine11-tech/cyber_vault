@@ -1,18 +1,34 @@
 @component('mail::message')
-# 🎉 Order Confirmation
+# 🛒 Order Confirmed!
 
-Thank you for your order!
+Hello **{{ $order->user->name ?? 'Valued Customer' }}**,  
+Thank you for shopping with **CyberVault**! 🧠💥
 
-Here is your order summary:
+---
 
+## 🧾 Order Summary
+
+@component('mail::table')
+| Product        | Quantity | Price |
+|----------------|----------|--------|
 @foreach ($order->items as $item)
-- {{ $item->product_name }} (x{{ $item->quantity }}) - ${{ $item->product_price }}
+| {{ $item->product_name }} | x{{ $item->quantity }} | ${{ number_format($item->product_price, 2) }} |
 @endforeach
+@endcomponent
 
-**Total Paid:** ${{ $order->total }}
+---
 
-We appreciate your business!
+### 💰 **Total Paid:** ${{ number_format($order->total, 2) }}
 
-Thanks,<br>
-{{ config('app.name') }}
+---
+
+We truly appreciate your trust in our service.  
+If you have any questions or need support, feel free to reply to this email.
+
+@component('mail::button', ['url' => config('app.url')])
+Visit CyberVault
+@endcomponent
+
+Thanks again,  
+The **CyberVault** Team 💻
 @endcomponent

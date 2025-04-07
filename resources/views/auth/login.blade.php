@@ -1,86 +1,133 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center min-vh-100 align-items-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card border-0 shadow-lg">
-                <div class="card-header bg-primary text-white py-4">
-                    <h2 class="mb-1">Welcome Back!</h2>
-                    <p class="mb-0">Sign in to continue</p>
-                </div>
+<style>
+    body {
+        background: linear-gradient(to bottom right, #0f0f0f, #1a1a1a);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-                <div class="card-body p-4">
-                    @if ($errors->any())
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <ul class="mb-0">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                    @endif
+    .auth-card {
+        max-width: 420px;
+        margin: 60px auto;
+        padding: 30px;
+        background: rgba(23, 25, 30, 0.95);
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(57, 255, 20, 0.3);
+        backdrop-filter: blur(5px);
+        color: #e4e4e4;
+    }
 
-                    <form action="/login" method="POST">
-                        @csrf
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email address</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-envelope"></i></span>
-                                <input type="email" class="form-control" id="email" name="email" 
-                                    placeholder="name@example.com" required>
-                            </div>
-                        </div>
+    .auth-card h2 {
+        font-weight: 600;
+        font-size: 26px;
+        color: #39ff14;
+        text-align: center;
+        margin-bottom: 25px;
+    }
 
-                        <div class="mb-4">
-                            <label for="password" class="form-label">Password</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-lock"></i></span>
-                                <input type="password" class="form-control" id="password" name="password" 
-                                    placeholder="Enter password" required>
-                            </div>
-                        </div>
+    .form-control {
+        background-color: #1c1f24;
+        border: 1px solid #444;
+        color: #eaeaea;
+    }
 
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="remember">
-                                <label class="form-check-label" for="remember">Remember me</label>
-                            </div>
-                            <a href="#!" class="text-decoration-none small">Forgot password?</a>
-                        </div>
+    .form-control:focus {
+        border-color: #39ff14;
+        box-shadow: 0 0 5px rgba(57, 255, 20, 0.6);
+    }
 
-                        <button type="submit" class="btn btn-primary w-100 mb-3">
-                            <i class="fas fa-sign-in-alt me-2"></i>Sign In
-                        </button>
+    .btn-hacker {
+        background-color: #39ff14;
+        border: none;
+        color: #0f0f0f;
+        font-weight: 600;
+        transition: 0.2s ease-in-out;
+        box-shadow: 0 0 10px #39ff14;
+    }
 
-                        <div class="text-center position-relative my-4">
-                            <hr class="my-3">
-                            <span class="px-3 bg-white position-absolute top-50 start-50 translate-middle text-muted small">
-                                Or continue with
-                            </span>
-                        </div>
+    .btn-hacker:hover {
+        background-color: #2ee70b;
+        box-shadow: 0 0 15px #39ff14, 0 0 10px #39ff14;
+    }
 
-                        <div class="row g-2">
-                            <div class="col">
-                                <a href="#" class="btn btn-outline-dark w-100">
-                                    <i class="fab fa-google me-2"></i>Google
-                                </a>
-                            </div>
-                            <div class="col">
-                                <a href="#" class="btn btn-outline-dark w-100">
-                                    <i class="fab fa-facebook me-2"></i>Facebook
-                                </a>
-                            </div>
-                        </div>
+    .auth-footer {
+        text-align: center;
+        margin-top: 20px;
+    }
 
-                        <p class="text-center mt-4 mb-0">Don't have an account? 
-                            <a href="/register" class="text-decoration-none">Sign up</a>
-                        </p>
-                    </form>
-                </div>
-            </div>
+    .auth-footer a {
+        color: #39ff14;
+        text-decoration: none;
+    }
+
+    .auth-footer a:hover {
+        text-decoration: underline;
+    }
+
+    .forgot-link {
+        color: #bbbbbb;
+        font-size: 0.9rem;
+        text-decoration: none;
+    }
+
+    .forgot-link:hover {
+        text-decoration: underline;
+        color: #39ff14;
+    }
+
+    .form-check-input:checked {
+        background-color: #39ff14;
+        border-color: #39ff14;
+    }
+</style>
+
+<div class="auth-card">
+    <h2>Welcome Back</h2>
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
+    @endif
+
+    <form method="POST" action="{{ route('login') }}">
+        @csrf
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Email address</label>
+            <input id="email" type="email" class="form-control" name="email" required autofocus>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input id="password" type="password" class="form-control" name="password" required>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="remember" name="remember">
+                <label class="form-check-label" for="remember">
+                    Remember me
+                </label>
+            </div>
+            <a href="#" class="forgot-link">Forgot password?</a>
+        </div>
+
+        <div class="d-grid">
+            <button type="submit" class="btn btn-hacker">
+                <i class="fas fa-sign-in-alt me-2"></i> Sign In
+            </button>
+        </div>
+    </form>
+
+    <div class="auth-footer mt-4">
+        Don't have an account?
+        <a href="{{ route('register') }}">Sign Up</a>
     </div>
 </div>
 @endsection

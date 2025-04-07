@@ -3,134 +3,175 @@
         abort(403, 'Unauthorized access');
     }
 @endphp
+
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
-        <div class="card shadow-lg border-0">
-            <div class="card-header bg-primary text-white py-3">
-                <h2 class="mb-0"><i class="fas fa-edit me-2"></i>Edit Product</h2>
+<style>
+    .admin-form {
+        background: rgba(23, 25, 30, 0.95);
+        border-radius: 16px;
+        padding: 40px;
+        color: #e4e4e4;
+        box-shadow: 0 0 20px rgba(57, 255, 20, 0.08);
+    }
+
+    .admin-form label {
+        color: #39ff14;
+        font-weight: 500;
+    }
+
+    .admin-form .form-control {
+        background-color: #1c1f24;
+        border: 1px solid #444;
+        color: #eaeaea;
+    }
+
+    .admin-form .form-control:focus {
+        border-color: #39ff14;
+        box-shadow: 0 0 6px rgba(57, 255, 20, 0.5);
+    }
+
+    .admin-form .input-group-text {
+        background-color: #2c2f36;
+        color: #aaa;
+        border-color: #444;
+    }
+
+    .admin-form small {
+        color: #aaa;
+    }
+
+    .btn-save {
+        background-color: #39ff14;
+        color: #000;
+        font-weight: bold;
+        border: none;
+        box-shadow: 0 0 10px #39ff14;
+        transition: 0.2s;
+    }
+
+    .btn-save:hover {
+        background-color: #2ecc71;
+        box-shadow: 0 0 15px #2ecc71;
+        color: #000;
+    }
+
+    .btn-cancel {
+        background-color: #444;
+        color: #eee;
+        border: 1px solid #666;
+        transition: 0.2s;
+    }
+
+    .btn-cancel:hover {
+        background-color: #555;
+        border-color: #999;
+    }
+
+    .img-thumbnail {
+        background-color: #1a1a1a;
+        border: 1px solid #333;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="admin-form">
+        <h2 class="mb-4 fw-bold text-center"><i class="fas fa-edit me-2"></i>Edit Product</h2>
+
+        @if ($errors->any())
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+
+        <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            @method('PUT')
+
+            <div class="mb-4">
+                <label for="name" class="form-label">Product Name</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                    <input type="text" class="form-control" name="name" value="{{ old('name', $product->name) }}" required>
+                </div>
             </div>
 
-            <div class="card-body p-4">
-                @if ($errors->any())
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <ul class="mb-0">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="mb-4">
+                <label for="description" class="form-label">Description</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-align-left"></i></span>
+                    <textarea class="form-control" name="description" rows="4">{{ old('description', $product->description) }}</textarea>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label for="price" class="form-label">Price</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                    <input type="number" class="form-control" name="price" step="0.01"
+                        value="{{ old('price', $product->price) }}" required>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label for="category" class="form-label">Category</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-list"></i></span>
+                    <input type="text" class="form-control" name="category" value="{{ old('category', $product->category) }}">
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label for="stock" class="form-label">Stock</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-boxes"></i></span>
+                    <input type="number" class="form-control" name="stock" value="{{ old('stock', $product->stock) }}">
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label for="image" class="form-label">Product Image</label>
+                @if($product->image_path)
+                    <div class="mb-3 text-center">
+                        <img src="{{ asset('storage/' . $product->image_path) }}" alt="Current Product Image"
+                            class="img-thumbnail mb-2" style="max-height: 200px;">
+                        <p class="text-muted">Current Image</p>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="remove_image" id="remove_image">
+                            <label class="form-check-label text-danger" for="remove_image">
+                                Remove current image
+                            </label>
+                        </div>
                     </div>
                 @endif
 
-                <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    @method('PUT')
-
-                    <!-- Debug Section (Temporary - Remove after testing) -->
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-image"></i></span>
+                    <input type="file" class="form-control" name="image" accept="image/*">
+                </div>
+                <small>
+                    Max file size: 2MB | Allowed: JPEG, PNG
                     @if($product->image_path)
-                        <div class="alert alert-info mb-4">
-                            <h5 class="mb-2">Image Debug Information:</h5>
-                            <p class="mb-1"><strong>Stored Path:</strong> {{ $product->image_path }}</p>
-                            <p class="mb-1"><strong>Full URL:</strong> {{ asset('storage/' . $product->image_path) }}</p>
-                            <p class="mb-1"><strong>File Exists:</strong>
-                                {{ file_exists(storage_path('app/public/' . $product->image_path)) ? 'Yes' : 'No' }}
-                            </p>
-                        </div>
+                        | Leave blank to keep current image
                     @endif
-
-                    <!-- Product Name -->
-                    <div class="mb-4">
-                        <label for="name" class="form-label">Product Name</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light"><i class="fas fa-tag"></i></span>
-                            <input type="text" class="form-control" name="name" value="{{ old('name', $product->name) }}"
-                                required>
-                        </div>
-                    </div>
-
-                    <!-- Description -->
-                    <div class="mb-4">
-                        <label for="description" class="form-label">Description</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light"><i class="fas fa-align-left"></i></span>
-                            <textarea class="form-control" name="description"
-                                rows="4">{{ old('description', $product->description) }}</textarea>
-                        </div>
-                    </div>
-
-                    <!-- Price -->
-                    <div class="mb-4">
-                        <label for="price" class="form-label">Price</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light"><i class="fas fa-dollar-sign"></i></span>
-                            <input type="number" class="form-control" name="price" step="0.01"
-                                value="{{ old('price', $product->price) }}" required>
-                        </div>
-                    </div>
-
-                    <!-- Category -->
-                    <div class="mb-4">
-                        <label for="category" class="form-label">Category</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light"><i class="fas fa-list"></i></span>
-                            <input type="text" class="form-control" name="category"
-                                value="{{ old('category', $product->category) }}">
-                        </div>
-                    </div>
-
-                    <!-- Stock -->
-                    <div class="mb-4">
-                        <label for="stock" class="form-label">Stock</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light"><i class="fas fa-boxes"></i></span>
-                            <input type="number" class="form-control" name="stock"
-                                value="{{ old('stock', $product->stock) }}">
-                        </div>
-                    </div>
-
-                    <!-- Image Upload -->
-                    <div class="mb-4">
-                        <label for="image" class="form-label">Product Image</label>
-
-                        @if($product->image_path)
-                            <div class="mb-3 text-center">
-                                <img src="{{ asset('storage/' . $product->image_path) }}" alt="Current Product Image"
-                                    class="img-thumbnail mb-2" style="max-height: 200px; max-width: 100%;">
-                                <p class="text-muted">Current Image</p>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="remove_image" id="remove_image">
-                                    <label class="form-check-label text-danger" for="remove_image">
-                                        Remove current image
-                                    </label>
-                                </div>
-                            </div>
-                        @endif
-
-                        <div class="input-group">
-                            <span class="input-group-text bg-light"><i class="fas fa-image"></i></span>
-                            <input type="file" class="form-control" name="image" accept="image/jpeg,image/png">
-                        </div>
-                        <small class="text-muted">
-                            Max file size: 2MB | Allowed formats: JPEG, PNG
-                            @if($product->image_path)
-                                | Leave blank to keep current image
-                            @endif
-                        </small>
-                    </div>
-
-                    <!-- Form Actions -->
-                    <div class="d-flex justify-content-end gap-2 mt-4">
-                        <a href="{{ route('products.index') }}" class="btn btn-secondary">
-                            <i class="fas fa-times me-2"></i>Cancel
-                        </a>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save me-2"></i>Update Product
-                        </button>
-                    </div>
-                </form>
+                </small>
             </div>
-        </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <a href="{{ route('products.index') }}" class="btn btn-cancel">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </a>
+                <button type="submit" class="btn btn-save">
+                    <i class="fas fa-save me-2"></i>Update Product
+                </button>
+            </div>
+        </form>
     </div>
+</div>
 @endsection

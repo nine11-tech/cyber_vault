@@ -1,83 +1,106 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center min-vh-100 align-items-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card border-0 shadow-lg">
-                <div class="card-header bg-success text-white py-4">
-                    <h2 class="mb-1">Create Account</h2>
-                    <p class="mb-0">Get started with your free account</p>
-                </div>
+<style>
+    body {
+        background: linear-gradient(to bottom right, #0f0f0f, #1a1a1a);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-                <div class="card-body p-4">
-                    @if (session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                    @endif
+    .auth-card {
+        max-width: 420px;
+        margin: 60px auto;
+        padding: 30px;
+        background: rgba(23, 25, 30, 0.95);
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(57, 255, 20, 0.3);
+        backdrop-filter: blur(5px);
+        color: #e4e4e4;
+    }
 
-                    @if ($errors->any())
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <ul class="mb-0">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                    @endif
+    .auth-card h2 {
+        font-weight: 600;
+        font-size: 26px;
+        color: #39ff14;
+        text-align: center;
+        margin-bottom: 25px;
+    }
 
-                    <form action="/register" method="POST">
-                        @csrf
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Full Name</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-user"></i></span>
-                                <input type="text" class="form-control" id="name" name="name" 
-                                    placeholder="John Doe" required>
-                            </div>
-                        </div>
+    .form-control {
+        background-color: #1c1f24;
+        border: 1px solid #444;
+        color: #eaeaea;
+    }
 
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email address</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-envelope"></i></span>
-                                <input type="email" class="form-control" id="email" name="email" 
-                                    placeholder="name@example.com" required>
-                            </div>
-                        </div>
+    .form-control:focus {
+        border-color: #39ff14;
+        box-shadow: 0 0 5px rgba(57, 255, 20, 0.6);
+    }
 
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-lock"></i></span>
-                                <input type="password" class="form-control" id="password" name="password" 
-                                    placeholder="Create password" required>
-                            </div>
-                        </div>
+    .btn-hacker {
+        background-color: #39ff14;
+        border: none;
+        color: #0f0f0f;
+        font-weight: 600;
+        transition: 0.2s ease-in-out;
+        box-shadow: 0 0 10px #39ff14;
+    }
 
-                        <div class="mb-4">
-                            <label for="password_confirmation" class="form-label">Confirm Password</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-lock"></i></span>
-                                <input type="password" class="form-control" id="password_confirmation" 
-                                    name="password_confirmation" placeholder="Confirm password" required>
-                            </div>
-                        </div>
+    .btn-hacker:hover {
+        background-color: #2ee70b;
+        box-shadow: 0 0 15px #39ff14, 0 0 10px #39ff14;
+    }
 
-                        <button type="submit" class="btn btn-success w-100 mb-3">
-                            <i class="fas fa-user-plus me-2"></i>Create Account
-                        </button>
+    .auth-footer {
+        text-align: center;
+        margin-top: 15px;
+    }
 
-                        <p class="text-center mt-4 mb-0">Already have an account? 
-                            <a href="/login" class="text-decoration-none">Sign in</a>
-                        </p>
-                    </form>
-                </div>
-            </div>
+    .auth-footer a {
+        color: #39ff14;
+        text-decoration: none;
+    }
+
+    .auth-footer a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="auth-card">
+    <h2>Create Account</h2>
+    <form method="POST" action="{{ route('register') }}">
+        @csrf
+
+        <div class="mb-3">
+            <label for="name" class="form-label">Full Name</label>
+            <input id="name" type="text" class="form-control" name="name" required autofocus>
         </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Email Address</label>
+            <input id="email" type="email" class="form-control" name="email" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input id="password" type="password" class="form-control" name="password" required>
+        </div>
+
+        <div class="mb-4">
+            <label for="password_confirmation" class="form-label">Confirm Password</label>
+            <input id="password_confirmation" type="password" class="form-control" name="password_confirmation" required>
+        </div>
+
+        <div class="d-grid">
+            <button type="submit" class="btn btn-hacker">
+                <i class="fas fa-user-plus me-2"></i> Create Account
+            </button>
+        </div>
+    </form>
+
+    <div class="auth-footer mt-3">
+        Already have an account?
+        <a href="{{ route('login') }}">Sign In</a>
     </div>
 </div>
 @endsection
