@@ -177,7 +177,7 @@
         </nav>
     @endunless
 
-    <main class="py-4">
+    <main class="@if(Request::is('home') || Request::is('/')) p-0 @else py-4 @endif">
         @yield('content')
     </main>
 
